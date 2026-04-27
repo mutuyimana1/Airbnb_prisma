@@ -27,6 +27,7 @@ model User {
   resetTokenExpiry DateTime?
   listings   Listing[]
   profile   profile?
+  bookings  Booking[] 
 }
 model Listing {
   id          Int      @id @default(autoincrement())
@@ -43,6 +44,7 @@ model Listing {
   updatedAt DateTime @updatedAt
   host  User     @relation(fields: [userId], references: [id])
   hostId Int
+  bookings Booking[]
 }
 model Booking {
   id          Int      @id @default(autoincrement())
@@ -52,9 +54,10 @@ model Booking {
   status      BookingStatus @default(PENDING)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  endDate     DateTime
+  listing  Listing  @relation(fields: [listingId], references: [id])
   listingId   Int
-  guest      Int
+  guest      User     @relation(fields: [guestId], references: [id])
+  guestId    Int
 }
 model profile {
   id        Int      @id @default(autoincrement())

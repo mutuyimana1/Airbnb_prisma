@@ -13,11 +13,19 @@ res.json(users);
 
 export const getUserById=async(req:Request,res:Response)=>{
     const id=parseInt(req.params["id"] as string);
-    const userById=await prisma.user.findUnique({where:{id}});
+    const userById=await prisma.user.findUnique({where:{id},
+    include:{
+        listings:true,
+        bookings:{
+            include:{listing:true}
+        }
+    }
+    });
 if(!userById){
     return res.status(404).json({error:`User with id ${id} not found`})
 }
-res.json(userById);
+const { password: _, ...userWithoutPassword } = userById;
+  res.json({message:"User retrieved successfully",userWithoutPassword, status:200});
 }
 
 //Create User

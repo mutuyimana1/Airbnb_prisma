@@ -11,7 +11,7 @@ export function errorHandler(
 ) {
   // Zod validation errors
   if (err instanceof ZodError) {
-    return res.status(400).json({ errors: err.errors });
+    return res.status(400).json({ errors: err.format() });
   }
 
   // Prisma known errors
