@@ -6,12 +6,13 @@ import listingsRouter from './routes/listings.routes';
 import bookingsRouter from './routes/booking.routes';
 import { connectDb } from "./config/prisma";
 import { errorHandler } from "./middlewares/errorHandler";
-
+import uploadRouter from "./routes/upload.routes"
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 app.use('/users',usersRouter);
+app.use("/users",uploadRouter)
 app.use('/listings',listingsRouter);
 app.use('/auth',authRouter);
 app.use('/bookings',bookingsRouter);
