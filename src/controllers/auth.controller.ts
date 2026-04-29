@@ -147,7 +147,7 @@ export const getMe = async (req: Request, res: Response) => {
 
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.json({ error});
   }
 };
 
