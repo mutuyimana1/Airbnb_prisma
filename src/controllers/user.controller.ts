@@ -5,14 +5,37 @@ import z from "zod";
 
 //get users
 export const getAllUsers=async (req:Request,res:Response)=>{
-    const users=await prisma.user.findMany();
-res.json(users);
+    const page=parseInt(req.query["page"] as string) ||1;
+    const limit=parseInt(req.query["limit"] as string) ||20;
+    const skip=(page-1)*limit;
+    const [users,total] =await Promise.all([
+prisma.user.findMany({skip,take:limit}),
+prisma.user.count(),
+    ]);
+  // meta tells the client how many page exist so that to take control.
+res.json({data:users,meta:{total,page,limit,totalPages:Math.ceil(total/limit)}});
 }
+// get all users by using cursor which is good for large dataset
+// export async function getAllUsersd(req: Request, res: Response) {
+//   const cursor = req.query["cursor"] ? parseInt(req.query["cursor"] as string) : undefined;
+//   const limit = parseInt(req.query["limit"] as string) || 20;
+
+//   const users = await prisma.user.findMany({
+//     take: limit,
+//     skip: cursor ? 1 : 0,
+//     cursor: cursor ? { id: cursor } : undefined,
+//     orderBy: { id: "asc" },
+//   });
+
+//   const nextCursor = users.length === limit ? users[users.length - 1]?.id : null;
+
+//   res.json({ data: users, nextCursor });
+// }
 
 //Get User by id
 
 export const getUserById=async(req:Request,res:Response)=>{
-    const id=parseInt(req.params["id"] as string);
+    const id=req.params["id"] as string;
     const userById=await prisma.user.findUnique({where:{id},
     include:{
         listings:true,
@@ -49,7 +72,7 @@ export const createUser=async(req:Request,res:Response,next:NextFunction)=>{
 //update user
 
 export const updateUser=async(req:Request,res:Response)=>{
-    const id=parseInt(req.params["id"] as string);
+    const id=req.params["id"] as string;
     const user=await prisma.user.findUnique({where:{id}});
     if(!user){
         return res.status(404).json({error:`User with id ${id} not found`})
@@ -59,7 +82,7 @@ export const updateUser=async(req:Request,res:Response)=>{
 }
 //delete user
 export const deleteUser=async(req:Request,res:Response)=>{
-    const id=parseInt(req.params["id"] as string);
+    const id=req.params["id"] as string;
     const user=await prisma.user.findUnique({where:{id}});
     if(!user){
         return res.status(404).json({error:`User with id ${id} not found`})

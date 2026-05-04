@@ -14,7 +14,7 @@ export const getAllBookings = async (req: Request, res: Response) => {
 };
 
 export const getBookingById = async (req: Request, res: Response) => {
-  const id = parseInt(req.params["id"] as string);
+  const id = req.params["id"] as string;
   const booking = await prisma.booking.findUnique({
     where: { id },
     include: { guest: true, listing: true }
@@ -81,7 +81,7 @@ export const createBooking = async (req: Request, res: Response) => {
 };
 
 export const deleteBooking = async (req: Request, res: Response) => {
-  const id = parseInt(req.params["id"] as string);
+  const id = req.params["id"] as string;
   const booking = await prisma.booking.findUnique({ where: { id } });
 
   if (!booking) return res.status(404).json({ error: "Booking not found" });
@@ -151,7 +151,7 @@ export const getBookingsByUserQuery = async (req: Request, res: Response) => {
 
 export const confirmBooking = async (req: Request, res: Response) => {
     try {
-        const id = parseInt(req.params["id"] as string);
+        const id = req.params["id"] as string;
         // Find the booking and include the listing to check ownership
         const booking = await prisma.booking.findUnique({
             where: { id },

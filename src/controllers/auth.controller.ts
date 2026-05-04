@@ -62,12 +62,12 @@ await sendEmail(
   htmlBody
 )
     // Return user without password
-    const { password: _, ...userWithoutPassword } = user;
-    return res.status(201).json(userWithoutPassword);
+    const { password: _, ...createdUser } = user;
+    return res.status(201).json({message:"User registered successfully",createdUser,status:201});
 
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: error });
   }
 };
 

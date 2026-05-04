@@ -123,7 +123,7 @@ const router=Router();
  *           nullable: true
  */
 
-router.get("/",authenticate,getAllUsers);
+router.get("/",getAllUsers);
 /**
  * @swagger
  * /users/{id}:

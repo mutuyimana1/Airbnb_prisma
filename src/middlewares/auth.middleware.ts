@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 export interface AuthRequest extends Request {
-    userId?: number;
+    userId?: string;
     role?: string;
 }
 
@@ -14,7 +14,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
         return res.status(401).json({ error: 'Access denied. No token provided.' });
     }
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; role: string };
+        const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; role: string };
         req.userId = decoded.userId;
         req.role = decoded.role;
         next();

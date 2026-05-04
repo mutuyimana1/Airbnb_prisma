@@ -11,7 +11,7 @@ res.json(listings);
 //Get Listing by id
 
 export const getListingById=async (req:Request,res:Response)=>{
-    const id=parseInt(req.params["id"] as string);
+    const id=req.params["id"] as string;
     const listingById=await prisma.listing.findUnique({where:{id}});
 if(!listingById){
     return res.status(404).json({error:`Listing with id ${id} not found`})
@@ -43,7 +43,7 @@ export const createListing=async (req:AuthRequest,res:Response)=>{
 //update listing
 
 export const updateListing=async (req:AuthRequest,res:Response)=>{
-    const id=parseInt(req.params["id"] as string);
+    const id=req.params["id"] as string;
     const listing=await prisma.listing.findUnique({where:{id}});
     if(!listing){
         return res.status(404).json({error:`Listing with id ${id} not found`})
@@ -57,7 +57,7 @@ export const updateListing=async (req:AuthRequest,res:Response)=>{
 }
 //delete listing
 export const deleteListing=async (req:AuthRequest,res:Response)=>{
-    const id=parseInt(req.params["id"] as string);
+    const id=req.params["id"] as string;
     const listing=await prisma.listing.findUnique({where:{id}});
     if(!listing){
         return res.status(404).json({error:`Listing with id ${id} not found`})

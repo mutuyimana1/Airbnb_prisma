@@ -9,7 +9,7 @@ import { updateListing } from "./listings.controller.js";
 // Then we upload the buffer to Cloudinary and save the URL to the database
 
 export async function uploadAvatar(req: Request, res: Response) {
-  const id = parseInt(req.params["id"] as string);
+  const id = req.params["id"] as string;
 
   // ensure user edit their own profile
   if(req.userId!==id){
@@ -56,7 +56,7 @@ export async function uploadAvatar(req: Request, res: Response) {
 }
 
 export const deleteAvatar=async(req:Request,res:Response)=>{
-const id=parseInt(req.params["id"] as string)
+const id=req.params["id"] as string
 if(req.userId!==id){
     return res.status(403).json({error:"Forbidden"})
 }
@@ -90,13 +90,14 @@ res.json({message:'Avatar deleted successsfully',updatedUser})
 }
 
 export const uploadListingPhotos=async(req:Request,res:Response)=>{
-    const id=parseInt(req.params["id"] as string)
+    try{
+    const id=req.params["id"] as string
     const listing=await prisma.listing.findUnique({where:{id}})
     if(!listing){
         return res.status(404).json("Listing not found")
     }
-    if(listing.hostId===req.userId){
-        return res.status(403).json('User should be host')
+    if(listing.hostId!==req.userId){
+        return res.status(403).json('User should be hoster')
     }
     const countPhoto=await prisma.listingPhoto.count({where:{listingId:id}})
     if(countPhoto>=5){
@@ -132,4 +133,8 @@ const uploadedListing=await prisma.listing.findUnique({
     }
 });
 res.json({message: `Successfully uploaded ${filesToUpload.length} photos`,listing:uploadedListing})
+    }catch(error){
+        console.log(error)
+    }
+
 }
