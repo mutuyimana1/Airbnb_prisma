@@ -18,7 +18,7 @@ const router=Router();
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -54,7 +54,7 @@ router.delete("/:id/avatar",authenticate,deleteAvatar)
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     requestBody:
  *       content:
  *         multipart/form-data:

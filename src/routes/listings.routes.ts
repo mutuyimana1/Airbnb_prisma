@@ -9,8 +9,8 @@ import { createListing, deleteListing, getAllListings, getListingById, updateLis
  *       type: object
  *       properties:
  *         id:
- *           type: integer
- *           example: 1
+ *           type: string
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *         title:
  *           type: string
  *           example: App launch
@@ -29,7 +29,7 @@ import { createListing, deleteListing, getAllListings, getListingById, updateLis
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *         name:
  *           type: string
  *         createdAt:
@@ -110,7 +110,7 @@ router.get("/",getAllListings);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: The listing ID
  *     responses:
  *       200:
@@ -163,7 +163,7 @@ router.post("/",authenticate,requireHost,createListing);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: The unique ID of the listing
  *     requestBody:
  *       required: true
@@ -194,7 +194,7 @@ router.put("/:id",authenticate,updateListing);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: The unique ID of the listing
  *     responses:
  *       200:

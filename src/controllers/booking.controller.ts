@@ -7,7 +7,7 @@ export const getAllBookings = async (req: Request, res: Response) => {
   const bookings = await prisma.booking.findMany({
     include: {
       guest: { select: { name: true } },
-      listing: { select: { title: true } }
+      listing: { select: { title: true, location: true } }
     }
   });
   res.json(bookings);

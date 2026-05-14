@@ -10,8 +10,8 @@ import { authenticate } from "../middlewares/auth.middleware";
  *       type: object
  *       properties:
  *         id:
- *           type: integer
- *           example: 1
+ *           type: string
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *         name:
  *           type: string
  *           example: Alice
@@ -113,7 +113,7 @@ const router=Router();
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *         name:
  *           type: string
  *         email:
@@ -137,7 +137,7 @@ router.get("/",getAllUsers);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: The user ID
  *     responses:
  *       200:
@@ -188,7 +188,7 @@ router.post("/",createUser);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     requestBody:
  *       content:
  *         application/json:
@@ -216,7 +216,7 @@ router.put("/:id",authenticate,updateUser);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: User deleted successfully

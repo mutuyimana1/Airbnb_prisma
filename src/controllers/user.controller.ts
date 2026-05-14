@@ -16,15 +16,18 @@ prisma.user.count(),
 res.json({data:users,meta:{total,page,limit,totalPages:Math.ceil(total/limit)}});
 }
 // get all users by using cursor which is good for large dataset
-// export async function getAllUsersd(req: Request, res: Response) {
-//   const cursor = req.query["cursor"] ? parseInt(req.query["cursor"] as string) : undefined;
+
+// export async function getAllUsersx(req: Request, res: Response) {
+//   const cursor = req.query["cursor"]  as string| undefined;
 //   const limit = parseInt(req.query["limit"] as string) || 20;
 
 //   const users = await prisma.user.findMany({
 //     take: limit,
 //     skip: cursor ? 1 : 0,
 //     cursor: cursor ? { id: cursor } : undefined,
-//     orderBy: { id: "asc" },
+//     orderBy:[
+//         {createdAt:"desc"},
+//         { id: "asc" }],
 //   });
 
 //   const nextCursor = users.length === limit ? users[users.length - 1]?.id : null;

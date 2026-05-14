@@ -18,7 +18,7 @@ import { getAllBookings, getBookingById, createBooking, deleteBooking, getBookin
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *         checkIn:
  *           type: string
  *           format: date-time
@@ -30,9 +30,9 @@ import { getAllBookings, getBookingById, createBooking, deleteBooking, getBookin
  *         status:
  *           $ref: '#/components/schemas/BookingStatus'
  *         listingId:
- *           type: integer
+ *           type: string
  *         guestId:
- *           type: integer
+ *           type: string
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -42,19 +42,19 @@ import { getAllBookings, getBookingById, createBooking, deleteBooking, getBookin
  */
 
 const router = Router();
-/**
- * @swagger
-* /bookings/search:
- *   get:
- *     summary: Search bookings for the logged-in user
- *     description: Returns bookings filtered by the authenticated user's ID.
- *     tags: [Bookings]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Search results
- */
+// /**
+//  * @swagger
+// * /bookings/search:
+//  *   get:
+//  *     summary: Search bookings for the logged-in user
+//  *     description: Returns bookings filtered by the authenticated user's ID.
+//  *     tags: [Bookings]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     responses:
+//  *       200:
+//  *         description: Search results
+//  */
 router.get("/search", authenticate, getBookingsByUserQuery); 
 /**
  * @swagger
@@ -85,7 +85,7 @@ router.get("/", getAllBookings);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Success
@@ -111,7 +111,7 @@ router.get("/:id", getBookingById);
  *             required: [listingId, checkIn, checkOut, totalPrice]
  *             properties:
  *               listingId:
- *                 type: integer
+ *                 type: string
  *               checkIn:
  *                 type: string
  *                 format: date-time
@@ -138,7 +138,7 @@ router.post("/", authenticate, requireGuest, createBooking);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Booking deleted
@@ -158,7 +158,7 @@ router.delete("/:id", authenticate, deleteBooking);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Booking confirmed
@@ -171,7 +171,7 @@ router.delete("/:id", authenticate, deleteBooking);
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *         checkIn:
  *           type: string
  *           format: date-time
@@ -184,9 +184,9 @@ router.delete("/:id", authenticate, deleteBooking);
  *           type: string
  *           enum: [PENDING, CONFIRMED, CANCELLED]
  *         listingId:
- *           type: integer
+ *           type: string
  *         guestId:
- *           type: integer
+ *           type: string
  */
 router.patch("/:id/confirm",authenticate,requireHost,confirmBooking);
 
