@@ -38,8 +38,8 @@ export const register = async (req: Request, res: Response) => {
 
     // Validate Role (HOST or GUEST only)
     const finalRole = role ?? 'GUEST';
-    if (!['HOST', 'GUEST'].includes(finalRole)) {
-      return res.status(400).json({ error: 'Invalid role. Must be HOST or GUEST' });
+    if (!['HOST', 'GUEST',"ADMIN"].includes(finalRole)) {
+      return res.status(400).json({ error: 'Invalid role' });
     }
 
     // Hash password

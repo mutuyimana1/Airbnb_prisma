@@ -16,14 +16,13 @@ async function main() {
   await prisma.listing.deleteMany();
   await prisma.user.deleteMany();
 
-  console.log("🗑️  Cleared existing data");
 
   // ─── Seed Users ───────────────────────────────────────────────────────────
 
   const alice = await prisma.user.create({
     data: {
-      name: "Alice Johnson",
-      email: "alice@example.com",
+      name: "Alice Alia",
+      email: "alicehost@example.com",
       username: "alice_host",
       password: hashedPassword, // use bcrypt in real seeds
       role: "HOST",
@@ -31,8 +30,8 @@ async function main() {
   });
   const bob = await prisma.user.create({
     data: {
-      name: "Bob Smith",
-      email: "bob@example.com",
+      name: "Bob Eric",
+      email: "bobguest@example.com",
       username: "bob_guest",
       password: hashedPassword,
       role: "GUEST",
@@ -57,7 +56,7 @@ const admin = await prisma.user.upsert({
     email: "admin@example.com",
     username: "admin",
     password: hashedPassword,
-    role: "HOST",
+    role: "ADMIN",
   },
 });
   // ─── Seed Listings ────────────────────────────────────────────────────────
@@ -113,22 +112,22 @@ const admin = await prisma.user.upsert({
       checkIn: new Date("2025-08-01"),
       checkOut: new Date("2025-08-05"),
       totalPrice: 480, // 4 nights × 120
-      status: "CONFIRMED",
+      status: "PENDING",
       guestId: bob.id,
       listingId: listing1.id,
     },
   });
 
-  await prisma.booking.create({
-    data: {
-      checkIn: new Date("2025-09-10"),
-      checkOut: new Date("2025-09-15"),
-      totalPrice: 1250, // 5 nights × 250
-      status: "PENDING",
-      guestId: carol.id,
-      listingId: listing2.id,
-    },
-  });
+  // await prisma.booking.create({
+  //   data: {
+  //     checkIn: new Date("2025-09-10"),
+  //     checkOut: new Date("2025-09-15"),
+  //     totalPrice: 1250, // 5 nights × 250
+  //     status: "PENDING",
+  //     guestId: carol.id,
+  //     listingId: listing2.id,
+  //   },
+  // });
 
   console.log("📅 Created bookings");
   console.log("✅ Seeding complete!");

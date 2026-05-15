@@ -163,8 +163,8 @@ export const confirmBooking = async (req: Request, res: Response) => {
         }
 
         //  Authorization: Only the Host who owns the listing or an ADMIN can confirm
-        if (booking.listing.hostId !== req.userId && req.role !== "ADMIN") {
-            return res.status(403).json({ error: "Only the host can confirm this booking" });
+        if (booking.listing.hostId !== req.userId || req.role !== "ADMIN") {
+            return res.status(403).json({ error: "Only the host who owns the listing or an ADMIN can confirm this booking" });
         }
 
         // Prevent confirming already cancelled or confirmed bookings
