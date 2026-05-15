@@ -19,7 +19,7 @@ const booking_controller_1 = require("../controllers/booking.controller");
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *         checkIn:
  *           type: string
  *           format: date-time
@@ -31,9 +31,9 @@ const booking_controller_1 = require("../controllers/booking.controller");
  *         status:
  *           $ref: '#/components/schemas/BookingStatus'
  *         listingId:
- *           type: integer
+ *           type: string
  *         guestId:
- *           type: integer
+ *           type: string
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -42,19 +42,19 @@ const booking_controller_1 = require("../controllers/booking.controller");
  *           format: date-time
  */
 const router = (0, express_1.Router)();
-/**
- * @swagger
-* /bookings/search:
- *   get:
- *     summary: Search bookings for the logged-in user
- *     description: Returns bookings filtered by the authenticated user's ID.
- *     tags: [Bookings]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Search results
- */
+// /**
+//  * @swagger
+// * /bookings/search:
+//  *   get:
+//  *     summary: Search bookings for the logged-in user
+//  *     description: Returns bookings filtered by the authenticated user's ID.
+//  *     tags: [Bookings]
+//  *     security:
+//  *       - bearerAuth: []
+//  *     responses:
+//  *       200:
+//  *         description: Search results
+//  */
 router.get("/search", auth_middleware_1.authenticate, booking_controller_1.getBookingsByUserQuery);
 /**
  * @swagger
@@ -85,7 +85,7 @@ router.get("/", booking_controller_1.getAllBookings);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Success
@@ -111,7 +111,7 @@ router.get("/:id", booking_controller_1.getBookingById);
  *             required: [listingId, checkIn, checkOut, totalPrice]
  *             properties:
  *               listingId:
- *                 type: integer
+ *                 type: string
  *               checkIn:
  *                 type: string
  *                 format: date-time
@@ -138,7 +138,7 @@ router.post("/", auth_middleware_1.authenticate, auth_middleware_1.requireGuest,
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Booking deleted
@@ -158,7 +158,7 @@ router.delete("/:id", auth_middleware_1.authenticate, booking_controller_1.delet
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: Booking confirmed
@@ -171,7 +171,7 @@ router.delete("/:id", auth_middleware_1.authenticate, booking_controller_1.delet
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *         checkIn:
  *           type: string
  *           format: date-time
@@ -184,9 +184,9 @@ router.delete("/:id", auth_middleware_1.authenticate, booking_controller_1.delet
  *           type: string
  *           enum: [PENDING, CONFIRMED, CANCELLED]
  *         listingId:
- *           type: integer
+ *           type: string
  *         guestId:
- *           type: integer
+ *           type: string
  */
 router.patch("/:id/confirm", auth_middleware_1.authenticate, auth_middleware_1.requireHost, booking_controller_1.confirmBooking);
 exports.default = router;

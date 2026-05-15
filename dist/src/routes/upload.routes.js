@@ -21,7 +21,7 @@ const router = (0, express_1.Router)();
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -57,7 +57,7 @@ router.delete("/:id/avatar", auth_middleware_1.authenticate, upload_controller_1
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     requestBody:
  *       content:
  *         multipart/form-data:

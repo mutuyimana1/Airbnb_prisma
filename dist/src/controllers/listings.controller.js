@@ -14,16 +14,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteListing = exports.updateListing = exports.createListing = exports.getListingById = exports.getAllListings = void 0;
 const prisma_1 = __importDefault(require("../config/prisma"));
+const redis_1 = require("redis");
+const redis = (0, redis_1.createClient)({ url: process.env["REDIS_URL"] });
 //get listings
 const getAllListings = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const listings = yield prisma_1.default.listing.findMany();
+    // const cachedListings=await redis.get("listings");
+    // if(cachedListings){
+    //     return res.json(JSON.parse(cachedListings));
+    // }
+    const listings = yield prisma_1.default.listing.findMany({
+        include: {
+            photos: true
+        }
+    });
+    // await redis.setEx("listings",60,JSON.stringify(listings));
     res.json(listings);
 });
 exports.getAllListings = getAllListings;
 //Get Listing by id
 const getListingById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
-    const listingById = yield prisma_1.default.listing.findUnique({ where: { id } });
+    const id = req.params["id"];
+    const listingById = yield prisma_1.default.listing.findUnique({ where: { id }, include: { photos: true } });
     if (!listingById) {
         return res.status(404).json({ error: `Listing with id ${id} not found` });
     }
@@ -32,29 +43,36 @@ const getListingById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.getListingById = getListingById;
 //Create Listing
 const createListing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { title, description, pricePerNight, guests, location } = req.body;
-    if (!title || !description || !pricePerNight) {
-        return res.status(400).json({ error: 'Title, description, and price per night are required' });
+    try {
+        const { title, description, pricePerNight, guests, location, emenities } = req.body;
+        if (!title || !description || !pricePerNight) {
+            return res.status(400).json({ error: 'Title, description, and price per night are required' });
+        }
+        if (typeof pricePerNight !== 'number' || pricePerNight <= 0) {
+            return res.status(400).json({ error: 'Price per night must be a positive number' });
+        }
+        if (typeof guests !== 'number' || guests <= 0) {
+            return res.status(400).json({ error: 'Guests must be a positive number' });
+        }
+        const hostId = req.userId;
+        if (!hostId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+        const newListing = yield prisma_1.default.listing.create({ data: { title, description, pricePerNight, guests, emenities, hostId, host: {
+                    connect: { id: hostId } // The code handles the "connect" logic
+                }, location } });
+        //   await redis.del("listings");
+        res.status(201).json(newListing);
     }
-    if (typeof pricePerNight !== 'number' || pricePerNight <= 0) {
-        return res.status(400).json({ error: 'Price per night must be a positive number' });
+    catch (error) {
+        res.status(500).json({ message: error, error: "Internal server error" });
+        console.error(error, "error while creating listing");
     }
-    if (typeof guests !== 'number' || guests <= 0) {
-        return res.status(400).json({ error: 'Guests must be a positive number' });
-    }
-    const hostId = req.userId;
-    if (!hostId) {
-        return res.status(401).json({ error: 'User not authenticated' });
-    }
-    const newListing = yield prisma_1.default.listing.create({ data: { title, description, pricePerNight, guests, hostId, host: {
-                connect: { id: hostId } // The code handles the "connect" logic
-            }, location } });
-    res.status(201).json(newListing);
 });
 exports.createListing = createListing;
 //update listing
 const updateListing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
+    const id = req.params["id"];
     const listing = yield prisma_1.default.listing.findUnique({ where: { id } });
     if (!listing) {
         return res.status(404).json({ error: `Listing with id ${id} not found` });
@@ -64,12 +82,13 @@ const updateListing = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(403).json({ error: "You can only edit your own listings" });
     }
     const updatedListing = yield prisma_1.default.listing.update({ where: { id }, data: req.body });
+    // await redis.del("listings");
     res.json(updatedListing);
 });
 exports.updateListing = updateListing;
 //delete listing
 const deleteListing = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
+    const id = req.params["id"];
     const listing = yield prisma_1.default.listing.findUnique({ where: { id } });
     if (!listing) {
         return res.status(404).json({ error: `Listing with id ${id} not found` });
@@ -79,6 +98,7 @@ const deleteListing = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(403).json({ error: "You can only edit your own listings" });
     }
     yield prisma_1.default.listing.delete({ where: { id } });
+    // await redis.del("listings");
     res.json({ message: 'Listing deleted successfully' });
 });
 exports.deleteListing = deleteListing;

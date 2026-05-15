@@ -12,8 +12,8 @@ const auth_middleware_1 = require("../middlewares/auth.middleware");
  *       type: object
  *       properties:
  *         id:
- *           type: integer
- *           example: 1
+ *           type: string
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *         name:
  *           type: string
  *           example: Alice
@@ -115,7 +115,7 @@ const router = (0, express_1.Router)();
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *         name:
  *           type: string
  *         email:
@@ -124,7 +124,7 @@ const router = (0, express_1.Router)();
  *           type: string
  *           nullable: true
  */
-router.get("/", auth_middleware_1.authenticate, user_controller_1.getAllUsers);
+router.get("/", user_controller_1.getAllUsers);
 /**
  * @swagger
  * /users/{id}:
@@ -138,7 +138,7 @@ router.get("/", auth_middleware_1.authenticate, user_controller_1.getAllUsers);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: The user ID
  *     responses:
  *       200:
@@ -189,7 +189,7 @@ router.post("/", user_controller_1.createUser);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     requestBody:
  *       content:
  *         application/json:
@@ -217,7 +217,7 @@ router.put("/:id", auth_middleware_1.authenticate, user_controller_1.updateUser)
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: User deleted successfully

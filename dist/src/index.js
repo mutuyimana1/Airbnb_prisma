@@ -17,20 +17,29 @@ const express_1 = __importDefault(require("express"));
 const users_routes_1 = __importDefault(require("./routes/users.routes"));
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const listings_routes_1 = __importDefault(require("./routes/listings.routes"));
+const ai_routes_ts_1 = __importDefault(require("./routes/v1/ai.routes.ts"));
 const booking_routes_1 = __importDefault(require("./routes/booking.routes"));
 const prisma_1 = require("./config/prisma");
 const errorHandler_1 = require("./middlewares/errorHandler");
 const upload_routes_1 = __importDefault(require("./routes/upload.routes"));
 const swagger_1 = require("./config/swagger");
+const path_1 = __importDefault(require("path"));
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 8080;
 app.use(express_1.default.json());
 (0, swagger_1.setupSwagger)(app);
+app.use((0, cors_1.default)());
 app.use('/users', users_routes_1.default);
 app.use("/users", upload_routes_1.default);
 app.use('/listings', listings_routes_1.default);
 app.use('/auth', auth_routes_1.default);
 app.use('/bookings', booking_routes_1.default);
+app.use("/ai/v1", ai_routes_ts_1.default);
+app.get('/', (req, res) => {
+    // Send the actual HTML file
+    res.sendFile(path_1.default.join(__dirname, '../public/index.html'));
+});
 app.use(errorHandler_1.errorHandler);
 // Start the server
 function main() {

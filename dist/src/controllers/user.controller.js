@@ -28,13 +28,35 @@ const prisma_1 = __importDefault(require("../config/prisma"));
 const zod_1 = __importDefault(require("zod"));
 //get users
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield prisma_1.default.user.findMany();
-    res.json(users);
+    const page = parseInt(req.query["page"]) || 1;
+    const limit = parseInt(req.query["limit"]) || 20;
+    const skip = (page - 1) * limit;
+    const [users, total] = yield Promise.all([
+        prisma_1.default.user.findMany({ skip, take: limit }),
+        prisma_1.default.user.count(),
+    ]);
+    // meta tells the client how many page exist so that to take control.
+    res.json({ data: users, meta: { total, page, limit, totalPages: Math.ceil(total / limit) } });
 });
 exports.getAllUsers = getAllUsers;
+// get all users by using cursor which is good for large dataset
+// export async function getAllUsersx(req: Request, res: Response) {
+//   const cursor = req.query["cursor"]  as string| undefined;
+//   const limit = parseInt(req.query["limit"] as string) || 20;
+//   const users = await prisma.user.findMany({
+//     take: limit,
+//     skip: cursor ? 1 : 0,
+//     cursor: cursor ? { id: cursor } : undefined,
+//     orderBy:[
+//         {createdAt:"desc"},
+//         { id: "asc" }],
+//   });
+//   const nextCursor = users.length === limit ? users[users.length - 1]?.id : null;
+//   res.json({ data: users, nextCursor });
+// }
 //Get User by id
 const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
+    const id = req.params["id"];
     const userById = yield prisma_1.default.user.findUnique({ where: { id },
         include: {
             listings: true,
@@ -73,7 +95,7 @@ const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
 exports.createUser = createUser;
 //update user
 const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
+    const id = req.params["id"];
     const user = yield prisma_1.default.user.findUnique({ where: { id } });
     if (!user) {
         return res.status(404).json({ error: `User with id ${id} not found` });
@@ -84,7 +106,7 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.updateUser = updateUser;
 //delete user
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
+    const id = req.params["id"];
     const user = yield prisma_1.default.user.findUnique({ where: { id } });
     if (!user) {
         return res.status(404).json({ error: `User with id ${id} not found` });

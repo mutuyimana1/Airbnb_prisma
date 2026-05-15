@@ -20,14 +20,14 @@ const getAllBookings = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const bookings = yield prisma_1.default.booking.findMany({
         include: {
             guest: { select: { name: true } },
-            listing: { select: { title: true } }
+            listing: { select: { title: true, location: true } }
         }
     });
     res.json(bookings);
 });
 exports.getAllBookings = getAllBookings;
 const getBookingById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
+    const id = req.params["id"];
     const booking = yield prisma_1.default.booking.findUnique({
         where: { id },
         include: { guest: true, listing: true }
@@ -92,7 +92,7 @@ const createBooking = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.createBooking = createBooking;
 const deleteBooking = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
+    const id = req.params["id"];
     const booking = yield prisma_1.default.booking.findUnique({ where: { id } });
     if (!booking)
         return res.status(404).json({ error: "Booking not found" });
@@ -151,7 +151,7 @@ const getBookingsByUserQuery = (req, res) => __awaiter(void 0, void 0, void 0, f
 exports.getBookingsByUserQuery = getBookingsByUserQuery;
 const confirmBooking = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const id = parseInt(req.params["id"]);
+        const id = req.params["id"];
         // Find the booking and include the listing to check ownership
         const booking = yield prisma_1.default.booking.findUnique({
             where: { id },
@@ -161,8 +161,8 @@ const confirmBooking = (req, res) => __awaiter(void 0, void 0, void 0, function*
             return res.status(404).json({ error: "Booking not found" });
         }
         //  Authorization: Only the Host who owns the listing or an ADMIN can confirm
-        if (booking.listing.hostId !== req.userId && req.role !== "ADMIN") {
-            return res.status(403).json({ error: "Only the host can confirm this booking" });
+        if (booking.listing.hostId !== req.userId || req.role !== "ADMIN") {
+            return res.status(403).json({ error: "Only the host who owns the listing or an ADMIN can confirm this booking" });
         }
         // Prevent confirming already cancelled or confirmed bookings
         if (booking.status !== "PENDING") {

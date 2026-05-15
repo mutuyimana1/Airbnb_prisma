@@ -56,8 +56,8 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         }
         // Validate Role (HOST or GUEST only)
         const finalRole = role !== null && role !== void 0 ? role : 'GUEST';
-        if (!['HOST', 'GUEST'].includes(finalRole)) {
-            return res.status(400).json({ error: 'Invalid role. Must be HOST or GUEST' });
+        if (!['HOST', 'GUEST', "ADMIN"].includes(finalRole)) {
+            return res.status(400).json({ error: 'Invalid role' });
         }
         // Hash password
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
@@ -74,12 +74,12 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const htmlBody = (0, emails_1.welcomeEmail)(name, role);
         yield (0, email_1.sendEmail)(email, "Welcome to Airbnb!", htmlBody);
         // Return user without password
-        const { password: _ } = user, userWithoutPassword = __rest(user, ["password"]);
-        return res.status(201).json(userWithoutPassword);
+        const { password: _ } = user, createdUser = __rest(user, ["password"]);
+        return res.status(201).json({ message: "User registered successfully", createdUser, status: 201 });
     }
     catch (error) {
         console.error(error);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json({ error: error });
     }
 });
 exports.register = register;

@@ -22,7 +22,7 @@ const prisma_js_1 = __importDefault(require("../config/prisma.js"));
 // Then we upload the buffer to Cloudinary and save the URL to the database
 function uploadAvatar(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const id = parseInt(req.params["id"]);
+        const id = req.params["id"];
         // ensure user edit their own profile
         if (req.userId !== id) {
             console.log(req.userId, "compare", id);
@@ -60,7 +60,7 @@ function uploadAvatar(req, res) {
     });
 }
 const deleteAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
+    const id = req.params["id"];
     if (req.userId !== id) {
         return res.status(403).json({ error: "Forbidden" });
     }
@@ -92,45 +92,50 @@ const deleteAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.deleteAvatar = deleteAvatar;
 const uploadListingPhotos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = parseInt(req.params["id"]);
-    const listing = yield prisma_js_1.default.listing.findUnique({ where: { id } });
-    if (!listing) {
-        return res.status(404).json("Listing not found");
-    }
-    if (listing.hostId === req.userId) {
-        return res.status(403).json('User should be host');
-    }
-    const countPhoto = yield prisma_js_1.default.listingPhoto.count({ where: { listingId: id } });
-    if (countPhoto >= 5) {
-        return res.status(400).json({ message: 'Maximum of photos allowed per listing' });
-    }
-    const files = req.files;
-    if (!files || files.length === 0) {
-        return res.status(400).json({ message: 'no file uploaded' });
-    }
-    ;
-    //calculate slots and limit files
-    const remainingSlots = 5 - countPhoto;
-    const filesToUpload = files.slice(0, remainingSlots);
-    //process uploads concurrently
-    const uploadPromises = filesToUpload.map((file) => __awaiter(void 0, void 0, void 0, function* () {
-        const { url, publicId } = yield (0, cloudinary_js_1.uploadToCloudinary)(file.buffer, "airbnb/listings");
-        return prisma_js_1.default.listingPhoto.create({
-            data: {
-                url,
-                publicId,
-                listingId: id
+    try {
+        const id = req.params["id"];
+        const listing = yield prisma_js_1.default.listing.findUnique({ where: { id } });
+        if (!listing) {
+            return res.status(404).json("Listing not found");
+        }
+        if (listing.hostId !== req.userId) {
+            return res.status(403).json('User should be hoster');
+        }
+        const countPhoto = yield prisma_js_1.default.listingPhoto.count({ where: { listingId: id } });
+        if (countPhoto >= 5) {
+            return res.status(400).json({ message: 'Maximum of photos allowed per listing' });
+        }
+        const files = req.files;
+        if (!files || files.length === 0) {
+            return res.status(400).json({ message: 'no file uploaded' });
+        }
+        ;
+        //calculate slots and limit files
+        const remainingSlots = 5 - countPhoto;
+        const filesToUpload = files.slice(0, remainingSlots);
+        //process uploads concurrently
+        const uploadPromises = filesToUpload.map((file) => __awaiter(void 0, void 0, void 0, function* () {
+            const { url, publicId } = yield (0, cloudinary_js_1.uploadToCloudinary)(file.buffer, "airbnb/listings");
+            return prisma_js_1.default.listingPhoto.create({
+                data: {
+                    url,
+                    publicId,
+                    listingId: id
+                }
+            });
+        }));
+        yield Promise.all(uploadPromises);
+        // return uploaded listing with photos
+        const uploadedListing = yield prisma_js_1.default.listing.findUnique({
+            where: { id },
+            include: {
+                photos: true
             }
         });
-    }));
-    yield Promise.all(uploadPromises);
-    // return uploaded listing with photos
-    const uploadedListing = yield prisma_js_1.default.listing.findUnique({
-        where: { id },
-        include: {
-            photos: true
-        }
-    });
-    res.json({ message: `Successfully uploaded ${filesToUpload.length} photos`, listing: uploadedListing });
+        res.json({ message: `Successfully uploaded ${filesToUpload.length} photos`, listing: uploadedListing });
+    }
+    catch (error) {
+        console.log(error);
+    }
 });
 exports.uploadListingPhotos = uploadListingPhotos;

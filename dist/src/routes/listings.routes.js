@@ -11,8 +11,8 @@ const listings_controller_1 = require("../controllers/listings.controller");
  *       type: object
  *       properties:
  *         id:
- *           type: integer
- *           example: 1
+ *           type: string
+ *           example: "123e4567-e89b-12d3-a456-426614174000"
  *         title:
  *           type: string
  *           example: App launch
@@ -31,7 +31,7 @@ const listings_controller_1 = require("../controllers/listings.controller");
  *       type: object
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
  *         name:
  *           type: string
  *         createdAt:
@@ -108,7 +108,7 @@ router.get("/", listings_controller_1.getAllListings);
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: The listing ID
  *     responses:
  *       200:
@@ -161,7 +161,7 @@ router.post("/", auth_middleware_1.authenticate, auth_middleware_1.requireHost, 
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: The unique ID of the listing
  *     requestBody:
  *       required: true
@@ -192,7 +192,7 @@ router.put("/:id", auth_middleware_1.authenticate, listings_controller_1.updateL
  *         name: id
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
  *         description: The unique ID of the listing
  *     responses:
  *       200:

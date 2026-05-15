@@ -48,7 +48,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineExtension = exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.ListingPhotoScalarFieldEnum = exports.ProfileScalarFieldEnum = exports.BookingScalarFieldEnum = exports.ListingScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.prismaVersion = exports.getExtensionContext = exports.Decimal = exports.Sql = exports.raw = exports.join = exports.empty = exports.sql = exports.PrismaClientValidationError = exports.PrismaClientInitializationError = exports.PrismaClientRustPanicError = exports.PrismaClientUnknownRequestError = exports.PrismaClientKnownRequestError = void 0;
+exports.defineExtension = exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.ListingPhotoScalarFieldEnum = exports.ProfileScalarFieldEnum = exports.ReviewScalarFieldEnum = exports.BookingScalarFieldEnum = exports.ListingScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.prismaVersion = exports.getExtensionContext = exports.Decimal = exports.Sql = exports.raw = exports.join = exports.empty = exports.sql = exports.PrismaClientValidationError = exports.PrismaClientInitializationError = exports.PrismaClientRustPanicError = exports.PrismaClientUnknownRequestError = exports.PrismaClientKnownRequestError = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/client"));
 /**
  * Prisma Errors
@@ -106,6 +106,7 @@ exports.ModelName = {
     User: 'User',
     Listing: 'Listing',
     Booking: 'Booking',
+    Review: 'Review',
     profile: 'profile',
     ListingPhoto: 'ListingPhoto'
 };
@@ -127,18 +128,17 @@ exports.UserScalarFieldEnum = {
     phone: 'phone',
     role: 'role',
     avatar: 'avatar',
-    avatarPublicId: 'avatarPublicId',
     bio: 'bio',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     resetToken: 'resetToken',
-    resetTokenExpiry: 'resetTokenExpiry'
+    resetTokenExpiry: 'resetTokenExpiry',
+    avatarPublicId: 'avatarPublicId'
 };
 exports.ListingScalarFieldEnum = {
     id: 'id',
     title: 'title',
     description: 'description',
-    location: 'location',
     pricePerNight: 'pricePerNight',
     guests: 'guests',
     userId: 'userId',
@@ -147,7 +147,8 @@ exports.ListingScalarFieldEnum = {
     ratings: 'ratings',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    hostId: 'hostId'
+    hostId: 'hostId',
+    location: 'location'
 };
 exports.BookingScalarFieldEnum = {
     id: 'id',
@@ -159,6 +160,14 @@ exports.BookingScalarFieldEnum = {
     updatedAt: 'updatedAt',
     listingId: 'listingId',
     guestId: 'guestId'
+};
+exports.ReviewScalarFieldEnum = {
+    id: 'id',
+    rating: 'rating',
+    comment: 'comment',
+    userId: 'userId',
+    listingId: 'listingId',
+    createdAt: 'createdAt'
 };
 exports.ProfileScalarFieldEnum = {
     id: 'id',

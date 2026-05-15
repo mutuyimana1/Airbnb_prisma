@@ -11,9 +11,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookingStatus = exports.ListingType = exports.Role = void 0;
 exports.Role = {
-    ADMIN: 'ADMIN',
     HOST: 'HOST',
-    GUEST: 'GUEST'
+    GUEST: 'GUEST',
+    ADMIN: 'ADMIN'
 };
 exports.ListingType = {
     APARTMENT: 'APARTMENT',
