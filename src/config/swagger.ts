@@ -1,7 +1,9 @@
+import "dotenv/config"
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import type { Express } from "express";
 
+const PORT=process.env.PORT
 const options: swaggerJsdoc.Options = {
   definition: {
     openapi: "3.0.0",
@@ -12,7 +14,7 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "https://airbnb-prisma-api.onrender.com",
         description: "Development server",
       },
     ],
@@ -48,5 +50,5 @@ export function setupSwagger(app: Express) {
     res.json(swaggerSpec);
   });
 
-  console.log("Swagger docs available at http://localhost:3000/api-docs");
+  console.log(`Swagger docs available at https://airbnb-prisma-api.onrender.com/api-docs`);
 }
